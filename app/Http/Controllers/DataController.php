@@ -42,9 +42,8 @@ class DataController extends Controller
 
         return response()->json([
             'item_type' => $request->get('item_type'),
-            'used_filters' => $filters,
             'results_count' => $data->count(),
-            'results' => $data->keys(),
+            'results' => $request->get('full_data', true) ? $data : $data->keys(),
         ]);
     }
 
