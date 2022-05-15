@@ -11,10 +11,12 @@ class Data extends Model
         'item_type',
         'item_id',
         'data',
+        'result',
     ];
 
     protected $casts = [
         'data' => 'json',
+        'result' => 'json',
     ];
 
     public function user()
