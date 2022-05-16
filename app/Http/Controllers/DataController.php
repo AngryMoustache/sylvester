@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use AngryMoustache\Predator\Enums\Filter;
+use App\FilterParser;
 use App\Models\Data;
+use App\Result;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class DataController extends Controller
 {
@@ -15,53 +17,30 @@ class DataController extends Controller
      */
     public function filter(Request $request)
     {
-        $data = Data::where([
-            'user_id' => $request->user()->id,
-            'item_type' => $request->get('item_type'),
-        ])->get()->mapWithKeys(function ($item) {
-            return [$item->item_id => [
-                'data' => $item->data,
-                'result' => $item->result,
-            ]];
-        });
+        $weights = collect($request->get('weights', []))->reverse()->values()
+            ->mapWithKeys(fn ($value, $key) => [$value => $key + 1])
+            ->toArray();
+
+        $data = Data::where('user_id', $request->user()->id)
+            ->whereIn('item_type', $request->get('item_type', []))
+            ->get()
+            ->mapWithKeys(fn ($item) => [
+                $item->item_id => new Result($item, $weights)
+            ]);
 
         $filters = $request->get('filters', []);
+        info(json_encode($filters));
 
-        foreach ($filters['string_contains'] ?? [] as $key => $value) {
-            $data = $data->filter(function ($item) use ($key, $value) {
-                $item = $item['data'];
-                return $value === null || Str::contains($item[$key] ?? '', $value, true);
-            });
-        }
-
-        foreach ($filters['string_is'] ?? [] as $key => $value) {
-            $data = $data->filter(function ($item) use ($key, $value) {
-                $item = $item['data'];
-                return ($item[$key] ?? '') === $value;
-            });
-        }
-
-        foreach ($filters['arrays_all'] ?? [] as $key => $value) {
-            $data = $data->filter(function ($item) use ($key, $value) {
-                $item = $item['data'];
-                return array_diff($value, $item[$key] ?? []) === [];
-            });
-        }
-
-        // foreach ($filters['arrays_some'] ?? [] as $key => $value) {
-        //     $data = $data->filter(function ($item) use ($key, $value) {
-        //         $item = $item['data'];
-        //         dd($value, $item[$key]);
-        //         return array_search($value, $item[$key] ?? []) === [];
-        //     });
-        // }
+        $results = (new FilterParser($filters, $data))
+            ->parse()
+            ->reject(fn ($item) => $item->weight === null)
+            ->sortByDesc('weight')
+            ->pluck('result');
 
         return response()->json([
             'item_type' => $request->get('item_type'),
-            'results_count' => $data->count(),
-            'results' => $request->get('full_data', true)
-                ? $data->pluck('result')
-                : $data->keys(),
+            'results_count' => $results->count(),
+            'results' => $results,
         ]);
     }
 

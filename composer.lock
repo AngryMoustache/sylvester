@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c8364624ab760330b7d50bd6945c5113",
+    "content-hash": "a757eb48ad72fbb86b8bf0b870a638b9",
     "packages": [
         {
             "name": "angry-moustache/media",
@@ -50,6 +50,51 @@
                 "source": "https://github.com/AngryMoustache/media/tree/master"
             },
             "time": "2022-02-12T20:54:04+00:00"
+        },
+        {
+            "name": "angry-moustache/predator",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AngryMoustache/predator.git",
+                "reference": "cedee18156e2d8533899f4e19a696e1b37e32b70"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AngryMoustache/predator/zipball/cedee18156e2d8533899f4e19a696e1b37e32b70",
+                "reference": "cedee18156e2d8533899f4e19a696e1b37e32b70",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "AngryMoustache\\Predator\\Providers\\PredatorServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AngryMoustache\\Predator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Connection package for Sylvester",
+            "keywords": [
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/AngryMoustache/predator/issues",
+                "source": "https://github.com/AngryMoustache/predator/tree/main"
+            },
+            "time": "2022-05-15T16:04:06+00:00"
         },
         {
             "name": "angry-moustache/rambo",
@@ -8247,7 +8292,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "angry-moustache/predator": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
