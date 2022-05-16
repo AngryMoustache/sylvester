@@ -10,17 +10,20 @@ class Data extends Model
         'user_id',
         'item_type',
         'item_id',
-        'data',
         'result',
     ];
 
     protected $casts = [
-        'data' => 'json',
         'result' => 'json',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function fields()
+    {
+        return $this->hasMany(Field::class);
     }
 }

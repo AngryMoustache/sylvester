@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use AngryMoustache\Predator\Enums\Filter;
 use App\FilterParser;
 use App\Models\Data;
+use App\Models\Field;
 use App\Result;
 use Illuminate\Http\Request;
 
@@ -51,14 +52,23 @@ class DataController extends Controller
      */
     public function store(Request $request)
     {
-        Data::updateOrCreate([
+        $data = Data::updateOrCreate([
             'user_id' => $request->user()->id,
             'item_type' => $request->post('item_type'),
             'item_id' => $request->post('item_id'),
         ], [
-            'data' => $request->post('data', []),
             'result' => $request->post('result', []),
         ]);
+
+        foreach ($request->post('fields', []) as $item) {
+            Field::updateOrCreate([
+                'data_id' => $data->id,
+                'type' => $item['type'],
+                'key' => $item['key'],
+            ], [
+                'value' => $item['value'],
+            ]);
+        }
 
         return response()->json([
             'message' => 'Data saved successfully',
