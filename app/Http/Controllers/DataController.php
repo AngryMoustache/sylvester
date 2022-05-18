@@ -39,7 +39,7 @@ class DataController extends Controller
 
                 return $collection->sortBy("data.${key}", SORT_NATURAL, $direction === 'desc');
             })
-            ->pluck('data.views');
+            ->pluck('result');
 
         return response()->json([
             'item_type' => $request->get('item_type'),
