@@ -17,6 +17,7 @@ class DataController extends Controller
     public function filter(Request $request)
     {
         $weights = $request->get('weights', []);
+        $orderBy = $request->get('orderBy', []);
 
         $data = Data::where('user_id', $request->user()->id)
             ->whereIn('item_type', $request->get('item_type', []))
@@ -26,13 +27,19 @@ class DataController extends Controller
             ]);
 
         $filters = $request->get('filters', []);
-        info(json_encode($filters));
+        info(json_encode($request->all()));
 
         $results = (new FilterParser($filters, $data))
             ->parse()
             ->reject(fn ($item) => $item->weight === null)
             ->sortByDesc('weight')
-            ->pluck('result');
+            ->when($orderBy !== [], function ($collection) use ($orderBy) {
+                $direction = array_values($orderBy)[0];
+                $key = array_keys($orderBy)[0];
+
+                return $collection->sortBy("data.${key}", SORT_NATURAL, $direction === 'desc');
+            })
+            ->pluck('data.views');
 
         return response()->json([
             'item_type' => $request->get('item_type'),
