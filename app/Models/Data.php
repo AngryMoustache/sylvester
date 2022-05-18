@@ -23,4 +23,14 @@ class Data extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getStringDataAttribute()
+    {
+        return $this->attributes['data'];
+    }
+
+    public function getStringResultAttribute()
+    {
+        return $this->attributes['result'];
+    }
 }

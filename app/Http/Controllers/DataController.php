@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use AngryMoustache\Predator\Enums\Filter;
 use App\FilterParser;
 use App\Models\Data;
 use App\Result;
@@ -17,9 +16,7 @@ class DataController extends Controller
      */
     public function filter(Request $request)
     {
-        $weights = collect($request->get('weights', []))->reverse()->values()
-            ->mapWithKeys(fn ($value, $key) => [$value => $key + 1])
-            ->toArray();
+        $weights = $request->get('weights', []);
 
         $data = Data::where('user_id', $request->user()->id)
             ->whereIn('item_type', $request->get('item_type', []))

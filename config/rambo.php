@@ -2,6 +2,7 @@
 
 use AngryMoustache\Rambo\Resources\Administrator;
 use AngryMoustache\Rambo\Resources\Attachment;
+use App\Rambo\Data;
 use App\Rambo\User;
 
 return [
@@ -11,6 +12,7 @@ return [
         Attachment::class,
         Administrator::class,
         User::class,
+        Data::class,
     ],
     'navigation' => [
         'General' => [
@@ -18,6 +20,7 @@ return [
             Attachment::class,
         ],
         User::class,
+        Data::class,
     ],
     'cropper' => [
         'formats' => [
