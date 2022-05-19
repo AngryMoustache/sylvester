@@ -31,13 +31,13 @@ class DataController extends Controller
 
         $results = (new FilterParser($filters, $data, $weights))
             ->parse()
-            ->reject(fn ($item) => $item->weight === null)
-            ->sortByDesc('weight')
+            ->filter(fn ($item) => (bool) $item->weight)
             ->when($orderBy !== [], function ($collection) use ($orderBy) {
-                $direction = array_values($orderBy)[0];
-                $key = array_keys($orderBy)[0];
+                foreach ($orderBy as $key => $direction) {
+                    $collection = $collection->sortBy("data.${key}", SORT_REGULAR, $direction === 'desc');
+                }
 
-                return $collection->sortBy("data.${key}", SORT_NATURAL, $direction === 'desc');
+                return $collection;
             })
             ->sortByDesc('weight')
             ->pluck('result');
