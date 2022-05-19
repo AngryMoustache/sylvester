@@ -9,14 +9,13 @@ class Result
     public string $item_id;
     public array $data;
     public array $result;
-    public ?int $weight = null;
+    public int $weight = 0;
 
-    public function __construct($item, $weights)
+    public function __construct($item)
     {
         $this->item_id = (string) $item->item_id;
         $this->data = $item->data;
         $this->result = $item->result;
-        $this->weights = $weights;
     }
 
     public function parse($key, $operator, $value = null)
@@ -49,17 +48,10 @@ class Result
             }
 
             if ($operator === 'LIKE') {
-                return count(array_intersect($value, $item ?? [])) > 0;
+                return count(array_intersect($value, $item ?? []));
             }
         }
 
         return false;
-    }
-
-    public function weigh($key, $verdict): void
-    {
-        if ($verdict === true) {
-            $this->weight += ($this->weights[$key] ?? 1);
-        }
     }
 }

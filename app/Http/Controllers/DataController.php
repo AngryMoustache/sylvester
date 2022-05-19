@@ -23,13 +23,13 @@ class DataController extends Controller
             ->whereIn('item_type', $request->get('item_type', []))
             ->get()
             ->mapWithKeys(fn ($item) => [
-                $item->item_id => new Result($item, $weights)
+                $item->item_id => new Result($item)
             ]);
 
         $filters = $request->get('filters', []);
         info(json_encode($request->all()));
 
-        $results = (new FilterParser($filters, $data))
+        $results = (new FilterParser($filters, $data, $weights))
             ->parse()
             ->reject(fn ($item) => $item->weight === null)
             ->sortByDesc('weight')
@@ -39,6 +39,7 @@ class DataController extends Controller
 
                 return $collection->sortBy("data.${key}", SORT_NATURAL, $direction === 'desc');
             })
+            ->sortByDesc('weight')
             ->pluck('result');
 
         return response()->json([

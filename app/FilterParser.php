@@ -4,7 +4,11 @@ namespace App;
 
 class FilterParser
 {
-    public function __construct(public $filters, public $data) {}
+    public function __construct(
+        public $filters,
+        public $data,
+        public $weights
+    ) {}
 
     public function parse()
     {
@@ -16,9 +20,11 @@ class FilterParser
                     $result->has_passed ??= false;
 
                     $verdict = $result->parse(...$filter);
-                    $result->weigh($filter[0], $verdict);
 
                     if ($verdict) {
+                        // Some verdicts will weigh heavier than others
+                        // A 'false' verdict will translate into 0, therefore not adding anything
+                        $result->weight += ($this->weights[$filter[0]] ?? 1) * ((int) $verdict);
                         $result->has_passed = true;
                     }
 
