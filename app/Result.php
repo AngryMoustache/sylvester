@@ -8,18 +8,20 @@ class Result
 {
     public string $item_id;
     public array $data;
-    public array $result;
     public int $weight = 0;
 
     public function __construct($item)
     {
         $this->item_id = (string) $item->item_id;
         $this->data = $item->data;
-        $this->result = $item->result;
     }
 
-    public function parse($key, $operator, $value = null)
+    public function parse(Filter $filter)
     {
+        $key = $filter->key;
+        $operator = $filter->operator;
+        $value = $filter->value;
+
         $item = $this->data[$key] ?? null;
         $value = json_decode($value, true);
 

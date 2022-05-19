@@ -11,12 +11,10 @@ class Data extends Model
         'item_type',
         'item_id',
         'data',
-        'result',
     ];
 
     protected $casts = [
         'data' => 'json',
-        'result' => 'json',
     ];
 
     public function user()
@@ -27,10 +25,5 @@ class Data extends Model
     public function getStringDataAttribute()
     {
         return $this->attributes['data'];
-    }
-
-    public function getStringResultAttribute()
-    {
-        return $this->attributes['result'];
     }
 }

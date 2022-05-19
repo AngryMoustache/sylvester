@@ -25,10 +25,6 @@ class Data extends Resource
             TextField::make('stringData', 'Data')
                 ->hideFrom(['index'])
                 ->searchable(),
-
-            TextField::make('stringResult', 'Result')
-                ->hideFrom(['index'])
-                ->searchable(),
         ];
     }
 

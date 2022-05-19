@@ -16,32 +16,42 @@ class DataController extends Controller
      */
     public function filter(Request $request)
     {
+        $fields = $request->get('fields', []);
         $weights = $request->get('weights', []);
         $orderBy = $request->get('orderBy', []);
-
-        $data = Data::where('user_id', $request->user()->id)
-            ->whereIn('item_type', $request->get('item_type', []))
-            ->get()
-            ->mapWithKeys(fn ($item) => [
-                $item->item_id => new Result($item)
-            ]);
-
         $filters = $request->get('filters', []);
         info(json_encode($request->all()));
 
+        // Get the initial data and push them into the Result class
+        $data = Data::where('user_id', $request->user()->id)
+            ->whereIn('item_type', $request->get('item_type', []))
+            ->get()
+            ->mapWithKeys(fn ($item) => [$item->item_id => new Result($item)]);
+
+        // Filter the data using the parser
         $results = (new FilterParser($filters, $data, $weights))
             ->parse()
             ->filter(fn ($item) => (bool) $item->weight)
             ->when($orderBy !== [], function ($collection) use ($orderBy) {
+                // Sort the results based on given keys, if any
                 foreach ($orderBy as $key => $direction) {
                     $collection = $collection->sortBy("data.${key}", SORT_REGULAR, $direction === 'desc');
                 }
 
                 return $collection;
             })
-            ->sortByDesc('weight')
-            ->pluck('result');
+            ->sortByDesc('weight');
 
+        // Select only the fields that are requested
+        if ($fields !== []) {
+            $results = $results->map(function ($result) use ($fields) {
+                return collect($result->data)->only($fields);
+            });
+        } else {
+            $results = $results->pluck('data');
+        }
+
+        // Return the results
         return response()->json([
             'item_type' => $request->get('item_type'),
             'results_count' => $results->count(),
@@ -62,7 +72,6 @@ class DataController extends Controller
             'item_id' => $request->post('item_id'),
         ], [
             'data' => $request->post('data', []),
-            'result' => $request->post('result', []),
         ]);
 
         return response()->json([
