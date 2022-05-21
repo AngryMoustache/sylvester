@@ -25,7 +25,9 @@ class Result
         $item = $this->data[$key] ?? null;
         $value = json_decode($value, true);
 
-        if (is_string($item) && is_string($value)) {
+        if (is_string($value)) {
+            $item ??= '';
+
             if ($operator === '=') {
                 return ($item ?? '') === ($value ?? '');
             }
@@ -44,13 +46,15 @@ class Result
             }
         }
 
-        if (is_array($item) && is_array($value)) {
+        if (is_array($value)) {
+            $item ??= [];
+
             if ($operator === '=') {
-                return array_diff($value, $item ?? []) === [];
+                return array_diff($value ?? [], $item ?? []) === [];
             }
 
             if ($operator === 'LIKE') {
-                return count(array_intersect($value, $item ?? []));
+                return count(array_intersect($value ?? [], $item ?? []));
             }
         }
 
