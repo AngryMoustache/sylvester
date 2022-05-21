@@ -27,8 +27,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getHasTokenAttribute()
+    public function history()
     {
-        return (bool) $this->tokens->isNotEmpty();
+        return $this->hasMany(History::class);
     }
 }

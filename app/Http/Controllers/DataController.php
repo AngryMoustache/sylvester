@@ -20,7 +20,6 @@ class DataController extends Controller
         $weights = $request->get('weights', []);
         $orderBy = $request->get('orderBy', []);
         $filters = $request->get('filters', []);
-        info(json_encode($request->all()));
 
         // Get the initial data and push them into the Result class
         $data = Data::where('user_id', $request->user()->id)
@@ -50,6 +49,12 @@ class DataController extends Controller
         } else {
             $results = $results->pluck('data');
         }
+
+        // Save to history
+        $request->user()->history()->create([
+            'form_params' => json_encode($request->all()),
+            'result_count' => $results->count(),
+        ]);
 
         // Return the results
         return response()->json([
