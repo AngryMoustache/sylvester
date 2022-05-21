@@ -44,6 +44,10 @@ class DataController extends Controller
         // Select only the fields that are requested
         if ($fields !== []) {
             $results = $results->map(function ($result) use ($fields) {
+                foreach ($fields as $key) {
+                    $result->data[$key] ??= $result->{$key} ?? null;
+                }
+
                 return collect($result->data)->only($fields);
             });
         } else {
