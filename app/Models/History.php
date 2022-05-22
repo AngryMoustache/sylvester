@@ -14,10 +14,10 @@ class History extends Model
         'result_count',
     ];
 
-    // public $cast = [
-    //     'form_params' => 'json',
-    //     'result_count' => 'integer',
-    // ];
+    public $cast = [
+        'form_params' => 'json',
+        'result_count' => 'integer',
+    ];
 
     public function user()
     {
