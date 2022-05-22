@@ -1,31 +1,30 @@
 <div>
     <h1>Usage</h1>
     <div class="w-1/2">
-        <p>{{ $historyChart->sum() }} total calls the past {{ $chartDays }} day(s)</p>
+        <p>{{ $historyChart->flatten()->sum() }} total calls the past {{ $chartDays }} day(s)</p>
         <canvas id="usage-chart"></canvas>
     </div>
 
     <script>
-        const labels = @json($historyChart->keys())
+        const labels = @json(collect($historyChart->first())->reverse()->keys())
 
         const data = {
             labels: labels,
             datasets: [
-                {
-                    label: 'API Usage',
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: @json($historyChart->values()),
-                }
+                @foreach ($historyChart as $type => $values)
+                    {
+                        label: @json($type),
+                        backgroundColor: @json($colors[$loop->index] ?? $colors[0]),
+                        borderColor: @json($colors[$loop->index] ?? $colors[0]),
+                        data: @json($values),
+                    },
+                @endforeach
             ]
         }
 
-        const config = {
+        new Chart(document.getElementById('usage-chart'), {
             type: 'line',
             data: data,
-            options: {}
-        }
-
-        new Chart(document.getElementById('usage-chart'), config)
+        })
     </script>
 </div>
