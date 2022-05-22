@@ -22,8 +22,8 @@ class Data extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getStringDataAttribute()
+    public function getNameAttribute()
     {
-        return $this->attributes['data'];
+        return "{$this->item_type}: {$this->item_id}";
     }
 }

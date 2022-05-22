@@ -2,12 +2,17 @@
 
 use App\Http\Controllers\DataController;
 use App\Http\Livewire\Dashboard;
+use App\Http\Livewire\Filters;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect('dashboard'));
-Route::get('dashboard', Dashboard::class)->name('dashboard');
+
+Route::prefix('dashboard')->group(function () {
+    Route::get('', Dashboard::class)->name('dashboard');
+    Route::get('filters', Filters::class)->name('dashboard.filters');
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('api/v1')->group(function () {

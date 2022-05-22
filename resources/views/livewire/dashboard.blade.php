@@ -1,6 +1,6 @@
 <div>
     <h1>Usage</h1>
-    <div class="w-1/2">
+    <div class="w-2/3">
         <p>{{ $historyChart->flatten()->sum() }} total calls the past {{ $chartDays }} day(s)</p>
         <canvas id="usage-chart"></canvas>
     </div>

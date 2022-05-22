@@ -9,7 +9,7 @@ class Dashboard extends Component
 {
     public $history;
 
-    public $chartDays = 14;
+    public $chartDays = 30;
 
     public $colors = [
         'rgb(255, 99, 132)',
