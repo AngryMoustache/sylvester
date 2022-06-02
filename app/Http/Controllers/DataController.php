@@ -107,4 +107,21 @@ class DataController extends Controller
             'message' => 'Data deleted successfully',
         ]);
     }
+
+    /**
+     * Remove all data of a certain type.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function truncate(Request $request)
+    {
+        Data::where([
+            'user_id' => $request->user()->id,
+            'item_type' => $request->post('item_type'),
+        ])->delete();
+
+        return response()->json([
+            'message' => 'Data truncated successfully',
+        ]);
+    }
 }

@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('filter', [DataController::class, 'filter']);
         Route::post('store', [DataController::class, 'store']);
-        Route::delete('delete', [DataController::class, 'delete']);
+        Route::post('delete', [DataController::class, 'delete']);
+        Route::post('truncate', [DataController::class, 'truncate']);
     });
 });
