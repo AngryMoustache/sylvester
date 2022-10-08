@@ -30,7 +30,7 @@ class DataController extends Controller
         // Filter the data using the parser
         $results = (new FilterParser($filters, $data, $weights))
             ->parse()
-            ->filter(fn ($item) => (bool) $item->weight)
+            ->when($filters !== [], fn ($items) => $items->filter(fn ($item) => (bool) $item->weight))
             ->when($orderBy !== [], function ($collection) use ($orderBy) {
                 // Sort the results based on given keys, if any
                 foreach ($orderBy as $key => $direction) {
